@@ -5,25 +5,26 @@ const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 
 const register = async (req, res) => {
-  const { firstname, lastname, mobile, email, password } = req.body;
+  const { lastname, firstname, mail, password } = req.body;
 
-  if (!firstname || firstname.length < 3 || firstname.length > 50) {
-    throw new BadRequestError(
-      'Veuillez fournir un prénom valide entre 3 et 50 caractères'
-    );
-  }
   if (!lastname || lastname.length < 3 || lastname.length > 50) {
     throw new BadRequestError(
       'Veuillez fournir un nom valide entre 3 et 50 caractères'
     );
   }
 
+  if (!firstname || firstname.length < 3 || firstname.length > 50) {
+    throw new BadRequestError(
+      'Veuillez fournir un prénom valide entre 3 et 50 caractères'
+    );
+  }
+
   const isValidEmail =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-      email
+      mail
     );
 
-  if (!email || !isValidEmail) {
+  if (!mail || !isValidEmail) {
     throw new BadRequestError('Veuillez fournir un email valide');
   }
 
@@ -39,15 +40,18 @@ const register = async (req, res) => {
 
   // insère l'utilisateur
   const {
-    rows: [user],
+    rows: [laniste],
   } = await db.query(
-    'INSERT INTO users (firstname, lastname, mobile, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [firstname, lastname, mobile, email, hashedPassword]
+    'INSERT INTO lanistes (lastname, firstname, email, password) VALUES ($1, $2, $3, $4) RETURNING *',
+    [firstname, lastname, mail, hashedPassword]
   );
 
   // génère un token qui va permettre de retrouver les infos de l'user
   const token = jwt.sign(
-    { userID: user.user_id, name: `${user.firstname} ${user.lastname}` },
+    {
+      lanisteID: laniste.laniste_id,
+      name: `${laniste.firstname} ${laniste.lastname}`,
+    },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,
@@ -56,24 +60,24 @@ const register = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     user: {
-      name: `${user.firstname} ${user.lastname}`,
+      name: `${laniste.firstname} ${laniste.lastname}`,
     },
     token,
   });
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { mail, password } = req.body;
 
-  if (!email || !password) {
+  if (!mail || !password) {
     throw new BadRequestError('fournir un email valide');
   }
 
   const {
-    rows: [user],
-  } = await db.query('select * from users where email = $1', [email]);
+    rows: [laniste],
+  } = await db.query('SELECT * FROM lanistes WHERE email = $1', [mail]);
 
-  if (!user) {
+  if (!laniste) {
     throw new UnauthentificatedError('id incorrects');
   }
 
@@ -84,16 +88,20 @@ const login = async (req, res) => {
   }
 
   const token = jwt.sign(
-    { userID: user.user_id, name: `${user.firstname} ${user.lastname}` },
+    {
+      lanisteID: laniste.laniste_id,
+      name: `${laniste.firstname} ${laniste.lastname}`,
+    },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
 
-  res
-    .status(StatusCodes.OK)
-    .json({ user: { name: `${user.firstname} ${user.lastname}` }, token });
+  res.status(StatusCodes.OK).json({
+    laniste: { name: `${laniste.firstname} ${laniste.lastname}` },
+    token,
+  });
 };
 
 module.exports = { register, login };
