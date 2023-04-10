@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import LudusCreator from '../components/LudusCreator';
 
 const Ludi = () => {
   const [ludi, setLudi] = useState([]);
   const token = localStorage.getItem('token');
   const url = 'http://localhost:5000/api/v1/ludi/';
-  const inputRef = useRef(null);
 
-  //* focus
-
-  useEffect(() => {
-    inputRef.current.focus();
-  }, [isEditing, taskAdded]);
-
-  //* allTasks
+  //* allLudi
 
   const getAllLudi = async () => {
     try {
@@ -32,7 +26,14 @@ const Ludi = () => {
     getAllLudi();
   }, []);
 
-  return <h2>page des ludi</h2>;
+  console.log(ludi.length);
+
+  return (
+    <>
+      <h2>page des ludi</h2>
+      <div>{ludi.length === 0 ? <LudusCreator /> : <p>ok</p>}</div>
+    </>
+  );
 };
 
 export default Ludi;

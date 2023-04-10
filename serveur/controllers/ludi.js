@@ -4,14 +4,14 @@ const { BadRequestError, NotFoundError } = require('../errors');
 
 //* create
 const createLudus = async (req, res) => {
-  const { name, speciality } = req.body;
-  const { userID } = req.user;
+  const { name, speciality_id } = req.body;
+  const { lanisteID } = req.laniste;
 
   const {
     rows: [ludus],
   } = await db.query(
-    'INSERT INTO ludi (  laniste_id, name, speciality ) VALUES ($1, $2, $3) RETURNING *',
-    [userID, name, speciality]
+    'INSERT INTO ludi (  laniste_id, name, speciality_id ) VALUES ($1, $2, $3) RETURNING *',
+    [lanisteID, name, speciality_id]
   );
   res.status(StatusCodes.CREATED).json({ ludus });
 };
@@ -19,10 +19,10 @@ const createLudus = async (req, res) => {
 //* get all
 
 const getAllLudi = async (req, res) => {
-  const { userID } = req.user;
+  const { lanisteID } = req.laniste;
   const { rows: ludi } = await db.query(
-    'SELECT * FROM ludi WHERE user_id= $1',
-    [userID]
+    'SELECT * FROM ludi WHERE laniste_id= $1',
+    [lanisteID]
   );
 
   res.status(StatusCodes.OK).json({ ludi });

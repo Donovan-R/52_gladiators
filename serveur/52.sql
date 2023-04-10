@@ -10,16 +10,26 @@ CREATE TABLE lanistes(
   CHECK (char_length(firstname) >= 1 AND char_length(firstname) <= 50),
   CHECK (char_length(lastname) >=1 AND char_length(lastname)<=50),
   CHECK (char_length(password) >= 6),
-  UNIQUE (email)
+  UNIQUE (mail)
 );
+
+CREATE TABLE specialities(
+  speciality_id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL
+)
 
 CREATE TABLE ludi(
   ludus_id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  speciality VARCHAR(50) NOT NULL,
   gladiators_number INTEGER DEFAULT 1 NOT NULL,
+  speciality_id INTEGER REFERENCES specialities(speciality_id) ON DELETE CASCADE NOT NULL,
   laniste_id INTEGER REFERENCES lanistes(laniste_id) ON DELETE CASCADE NOT NULL
 );
+
+-- CREATE TABLE skills(
+--   skill_id SERIAL PRIMARY KEY,
+
+-- )
 
 CREATE TABLE gladiators(
   gladiator_id SERIAL PRIMARY KEY,

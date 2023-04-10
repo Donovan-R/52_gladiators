@@ -7,7 +7,6 @@ const Register = () => {
     lastname: '',
     firstname: '',
     mail: '',
-    speciality: '',
     password: '',
   });
 
@@ -16,7 +15,7 @@ const Register = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    setUser({ ...laniste, [name]: value });
+    setLaniste({ ...laniste, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -74,7 +73,7 @@ const Register = () => {
                 onChange={handleChange}
               />
             </div>
-            <div className='formRow'>
+            {/* <div className='formRow'>
               <label htmlFor='speciality'>choix d'une spécialité</label>
               <select className='formInput' name='pets' id='pet-select'>
                 <option value=''>--choisissez une spécialité--</option>
@@ -82,14 +81,8 @@ const Register = () => {
                 <option value={laniste.speciality}>lutte</option>
                 <option value={laniste.speciality}>athlétisme</option>
               </select>
-              {/* <input
-                type=''
-                className='formInput'
-                name='lspeciality'
-                value={laniste.speciality}
-                onChange={handleChange}
-              /> */}
-            </div>
+             
+            </div> */}
 
             <div className='formRow'>
               <label htmlFor='password'>Mot de passe</label>

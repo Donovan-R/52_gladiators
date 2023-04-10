@@ -22,6 +22,8 @@ const Login = ({ setToken }) => {
     password: '',
   });
 
+  const [ludus, setLudus] = useState({});
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -37,7 +39,6 @@ const Login = ({ setToken }) => {
         'http://localhost:5000/api/v1/auth/login',
         laniste
       );
-
       localStorage.setItem('token', data.token);
       localStorage.setItem('laniste', laniste.mail);
       setToken(data.token);

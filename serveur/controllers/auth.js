@@ -42,7 +42,7 @@ const register = async (req, res) => {
   const {
     rows: [laniste],
   } = await db.query(
-    'INSERT INTO lanistes (lastname, firstname, email, password) VALUES ($1, $2, $3, $4) RETURNING *',
+    'INSERT INTO lanistes (lastname, firstname, mail, password) VALUES ($1, $2, $3, $4) RETURNING *',
     [firstname, lastname, mail, hashedPassword]
   );
 
@@ -59,7 +59,7 @@ const register = async (req, res) => {
   );
 
   res.status(StatusCodes.CREATED).json({
-    user: {
+    laniste: {
       name: `${laniste.firstname} ${laniste.lastname}`,
     },
     token,
@@ -75,13 +75,13 @@ const login = async (req, res) => {
 
   const {
     rows: [laniste],
-  } = await db.query('SELECT * FROM lanistes WHERE email = $1', [mail]);
+  } = await db.query('SELECT * FROM lanistes WHERE mail = $1', [mail]);
 
   if (!laniste) {
     throw new UnauthentificatedError('id incorrects');
   }
 
-  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  const isPasswordCorrect = await bcrypt.compare(password, laniste.password);
 
   if (!isPasswordCorrect) {
     throw new UnauthentificatedError('mdp incorrect');
@@ -99,7 +99,10 @@ const login = async (req, res) => {
   );
 
   res.status(StatusCodes.OK).json({
-    laniste: { name: `${laniste.firstname} ${laniste.lastname}` },
+    laniste: {
+      name: `${laniste.firstname} ${laniste.lastname}`,
+      denier: `${laniste.denier}`,
+    },
     token,
   });
 };
