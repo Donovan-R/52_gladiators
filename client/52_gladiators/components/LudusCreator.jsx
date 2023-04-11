@@ -42,7 +42,7 @@ const LudusCreator = () => {
         </div>
         <div className='formRow'>
           <label htmlFor='speciality'>choix d'une spécialité</label>
-          <select className='formInput' name='pets' id='pet-select'>
+          <select className='formInput' name='speciality'>
             <option value=''>--choisissez une spécialité--</option>
             <option value={ludus.speciality_id}>course de char</option>
             <option value={ludus.speciality_id}>lutte</option>

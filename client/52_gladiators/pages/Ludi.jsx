@@ -30,7 +30,7 @@ const Ludi = () => {
 
   return (
     <>
-      <h2>page des ludi</h2>
+      <h2>Maison des ludi</h2>
       <div>{ludi.length === 0 ? <LudusCreator /> : <p>ok</p>}</div>
     </>
   );
