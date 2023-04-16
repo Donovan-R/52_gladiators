@@ -37,14 +37,17 @@ const register = async (req, res) => {
   // crypte le mot de passe
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  const authQueries = require('../db/authQueries');
 
   // insère l'utilisateur
   const {
     rows: [laniste],
-  } = await db.query(
-    'INSERT INTO lanistes (lastname, firstname, mail, password) VALUES ($1, $2, $3, $4) RETURNING *',
-    [firstname, lastname, mail, hashedPassword]
-  );
+  } = await db.query(authQueries.insertUser, [
+    firstname,
+    lastname,
+    mail,
+    hashedPassword,
+  ]);
 
   // génère un token qui va permettre de retrouver les infos de l'user
   const token = jwt.sign(

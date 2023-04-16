@@ -7,6 +7,18 @@ const Ludi = () => {
   const token = localStorage.getItem('token');
   const url = 'http://localhost:5000/api/v1/ludi/';
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        'http://localhost:5000/api/v1/auth/ludi',
+        ludus
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //* allLudi
 
   const getAllLudi = async () => {
@@ -31,7 +43,18 @@ const Ludi = () => {
   return (
     <>
       <h2>Maison des ludi</h2>
-      <div>{ludi.length === 0 ? <LudusCreator /> : <p>ok</p>}</div>
+      <div>
+        {ludi.length === 0 ? (
+          <section className='createLudusSection'>
+            <h2>Créer votre ludus</h2>{' '}
+            <form action='' onSubmit={handleSubmit}>
+              <LudusCreator />{' '}
+            </form>
+          </section>
+        ) : (
+          <p>ok</p>
+        )}
+      </div>
     </>
   );
 };
