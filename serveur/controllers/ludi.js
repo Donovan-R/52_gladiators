@@ -1,18 +1,23 @@
 const { StatusCodes } = require('http-status-codes');
 const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../errors');
+const ludiQueries = require('../db/ludiQueries');
+
+//* getlanisteInfos
 
 //* create
 const createLudus = async (req, res) => {
-  const { name, speciality_id } = req.body;
+  const { name, speciality_name } = req.body;
   const { lanisteID } = req.laniste;
 
   const {
     rows: [ludus],
-  } = await db.query(
-    'INSERT INTO ludi (  laniste_id, name, speciality_id ) VALUES ($1, $2, $3) RETURNING *',
-    [lanisteID, name, speciality_id]
-  );
+  } = await db.query(ludiQueries.createLudus, [
+    name,
+    speciality_name,
+    lanisteID,
+  ]);
+
   res.status(StatusCodes.CREATED).json({ ludus });
 };
 
@@ -20,16 +25,11 @@ const createLudus = async (req, res) => {
 
 const getAllLudi = async (req, res) => {
   const { lanisteID } = req.laniste;
-  const { rows: ludi } = await db.query(
-    'SELECT * FROM ludi WHERE laniste_id= $1',
-    [lanisteID]
-  );
-
+  const { rows: ludi } = await db.query(ludiQueries.getAllLudi, [lanisteID]);
   res.status(StatusCodes.OK).json({ ludi });
 };
 
 module.exports = {
   createLudus,
   getAllLudi,
-  updateLudus,
 };

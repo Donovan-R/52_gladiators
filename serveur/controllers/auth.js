@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
+const authQueries = require('../db/authQueries');
 
 const register = async (req, res) => {
   const { lastname, firstname, mail, password } = req.body;
@@ -37,36 +38,18 @@ const register = async (req, res) => {
   // crypte le mot de passe
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const authQueries = require('../db/authQueries');
 
   // insère l'utilisateur
   const {
     rows: [laniste],
-  } = await db.query(authQueries.insertUser, [
+  } = await db.query(authQueries.insertLaniste, [
     firstname,
     lastname,
     mail,
     hashedPassword,
   ]);
 
-  // génère un token qui va permettre de retrouver les infos de l'user
-  const token = jwt.sign(
-    {
-      lanisteID: laniste.laniste_id,
-      name: `${laniste.firstname} ${laniste.lastname}`,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_LIFETIME,
-    }
-  );
-
-  res.status(StatusCodes.CREATED).json({
-    laniste: {
-      name: `${laniste.firstname} ${laniste.lastname}`,
-    },
-    token,
-  });
+  res.status(StatusCodes.CREATED).json(laniste);
 };
 
 const login = async (req, res) => {
@@ -78,7 +61,7 @@ const login = async (req, res) => {
 
   const {
     rows: [laniste],
-  } = await db.query('SELECT * FROM lanistes WHERE mail = $1', [mail]);
+  } = await db.query(authQueries.getLaniste, [mail]);
 
   if (!laniste) {
     throw new UnauthentificatedError('id incorrects');
@@ -103,8 +86,9 @@ const login = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     laniste: {
-      name: `${laniste.firstname} ${laniste.lastname}`,
-      denier: `${laniste.denier}`,
+      laniste: laniste.firstname,
+      mail: laniste.mail,
+      denier: laniste.denier,
     },
     token,
   });

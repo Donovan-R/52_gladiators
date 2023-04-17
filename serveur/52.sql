@@ -22,7 +22,7 @@ CREATE TABLE ludi(
   ludus_id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   gladiators_number INTEGER DEFAULT 1 NOT NULL,
-  speciality_id INTEGER REFERENCES specialities(speciality_id) ON DELETE CASCADE NOT NULL,
+  speciality_name VARCHAR(50) NOT NULL,
   laniste_id INTEGER REFERENCES lanistes(laniste_id) ON DELETE CASCADE NOT NULL
 );
 

@@ -22,8 +22,6 @@ const Login = ({ setToken }) => {
     password: '',
   });
 
-  const [ludus, setLudus] = useState({});
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -40,7 +38,6 @@ const Login = ({ setToken }) => {
         laniste
       );
       localStorage.setItem('token', data.token);
-      localStorage.setItem('laniste', laniste.mail);
       setToken(data.token);
       navigate('/ludi');
     } catch (error) {

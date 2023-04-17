@@ -3,14 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [laniste, setLaniste] = useState({
     lastname: '',
     firstname: '',
     mail: '',
     password: '',
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -25,8 +24,7 @@ const Register = () => {
         'http://localhost:5000/api/v1/auth/register',
         laniste
       );
-      localStorage.setItem('token', data.token);
-      navigate('/ludi');
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +34,6 @@ const Register = () => {
     <>
       <section className='registerForm'>
         <div className='register'>
-          {alert.show && <Alert {...alert} removeAlert={showAlert} />}
           <h2>52 - jeux du cirque</h2>
           <div className='underline'></div>
 
@@ -73,17 +70,6 @@ const Register = () => {
                 onChange={handleChange}
               />
             </div>
-            {/* <div className='formRow'>
-              <label htmlFor='speciality'>choix d'une spécialité</label>
-              <select className='formInput' name='pets' id='pet-select'>
-                <option value=''>--choisissez une spécialité--</option>
-                <option value={laniste.speciality}>course de char</option>
-                <option value={laniste.speciality}>lutte</option>
-                <option value={laniste.speciality}>athlétisme</option>
-              </select>
-             
-            </div> */}
-
             <div className='formRow'>
               <label htmlFor='password'>Mot de passe</label>
               <input

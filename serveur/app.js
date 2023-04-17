@@ -9,7 +9,8 @@ const authenticateUser = require('./middleware/authentication.js');
 
 //* routers
 const authRouter = require('./routes/auth.js');
-// const ludiRouter = require('./routes/ludi.js');
+const ludiRouter = require('./routes/ludi.js');
+const accountRouter = require('./routes/account.js');
 
 const notFound = require('./middleware/notFound.js');
 const errorHandler = require('./middleware/error-handler.js');
@@ -19,7 +20,8 @@ app.use(express.json());
 
 //* routes
 app.use('/api/v1/auth', authRouter);
-// app.use('/api/v1/ludi', authenticateUser, ludiRouter);
+app.use('/api/v1/ludi', authenticateUser, ludiRouter);
+app.use('/api/v1/account', authenticateUser, accountRouter);
 
 //*middleware
 app.use(notFound);

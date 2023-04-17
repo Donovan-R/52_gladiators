@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const LudusCreator = () => {
   const [ludus, setLudus] = useState({
     name: '',
-    speciality_id: '',
+    speciality_name: '',
   });
 
   const handleChange = (e) => {
@@ -28,9 +28,9 @@ const LudusCreator = () => {
         <label htmlFor='speciality'>choix d'une spécialité</label>
         <select className='formInput' name='speciality'>
           <option value=''>--choisissez une spécialité--</option>
-          <option value={ludus.speciality_id}>course de char</option>
-          <option value={ludus.speciality_id}>lutte</option>
-          <option value={ludus.speciality_id}>athlétisme</option>
+          <option value={ludus.speciality_name}>course de char</option>
+          <option value={ludus.speciality_name}>lutte</option>
+          <option value={ludus.speciality_name}>athlétisme</option>
         </select>
       </div>
     </>

@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
 
     //attache l'utilisateur
     req.laniste = {
-      lanisteID: payload.userID,
+      lanisteID: payload.lanisteID,
       name: payload.name,
     };
 
