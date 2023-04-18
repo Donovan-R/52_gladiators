@@ -1,48 +1,32 @@
 const { BadRequestError, UnauthentificatedError } = require('../errors');
-const bcrypt = require('bcrypt');
-const db = require('../db');
+
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
-const authQueries = require('../db/authQueries');
+const authServices = require('../services/authServices');
 
 const register = async (req, res) => {
   const { lastname, firstname, mail, password } = req.body;
 
-  if (!lastname || lastname.length < 3 || lastname.length > 50) {
-    throw new BadRequestError(
-      'Veuillez fournir un nom valide entre 3 et 50 caractères'
-    );
+  if (!lastname) {
+    throw new BadRequestError('Veuillez fournir un nom');
   }
 
-  if (!firstname || firstname.length < 3 || firstname.length > 50) {
-    throw new BadRequestError(
-      'Veuillez fournir un prénom valide entre 3 et 50 caractères'
-    );
+  if (!firstname) {
+    throw new BadRequestError('Veuillez fournir un prénom');
   }
 
-  const isValidEmail =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-      mail
-    );
-
-  if (!mail || !isValidEmail) {
-    throw new BadRequestError('Veuillez fournir un email valide');
+  if (!mail) {
+    throw new BadRequestError('Veuillez fournir un mail');
   }
 
-  if (!password || password.length < 6) {
-    throw new BadRequestError(
-      'Veuillez fournir un mot de passe avec au moins 6 caractéres'
-    );
+  if (!password) {
+    throw new BadRequestError('Veuillez fournir un mot de passe');
   }
-
-  // crypte le mot de passe
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
 
   // insère l'utilisateur
   const {
     rows: [laniste],
-  } = await authQueries.insertLaniste();
+  } = await authServices.insertNewLaniste(lastname, firstname, mail, password);
 
   res.status(StatusCodes.CREATED).json(laniste);
 };
@@ -50,23 +34,14 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { mail, password } = req.body;
 
-  if (!mail || !password) {
-    throw new BadRequestError('fournir un email valide');
+  if (!mail) {
+    throw new BadRequestError('fournir un email');
   }
 
   const {
     rows: [laniste],
-  } = await authQueries.getLaniste(mail);
-
-  if (!laniste) {
-    throw new UnauthentificatedError('id incorrects');
-  }
-
-  const isPasswordCorrect = await bcrypt.compare(password, laniste.password);
-
-  if (!isPasswordCorrect) {
-    throw new UnauthentificatedError('mdp incorrect');
-  }
+  } = await authServices.checkLaniste(mail, password);
+  console.log(laniste);
 
   const token = jwt.sign(
     {

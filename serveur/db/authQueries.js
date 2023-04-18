@@ -1,6 +1,6 @@
 const db = require('../db');
 
-async function insertLaniste() {
+async function insertLaniste(firstname, lastname, mail, hashedPassword) {
   return await db.query(
     'INSERT INTO lanistes (lastname, firstname, mail, password) VALUES ($1, $2, $3, $4) RETURNING *',
     [firstname, lastname, mail, hashedPassword]
