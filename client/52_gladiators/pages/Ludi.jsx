@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import getLaniste from '../api/ludiQueries';
 // import LudusCreator from '../components/LudusCreator';
 
 const Ludi = () => {
@@ -8,14 +9,16 @@ const Ludi = () => {
 
   const getLanisteInfos = async () => {
     try {
-      const { data: laniste } = await axios.get(
-        'http://localhost:5000/api/v1/account',
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const { data: laniste } = await getLaniste();
+
+      // await axios.get(
+      //   'http://localhost:5000/api/v1/account',
+      //   {
+      //     headers: {
+      //       authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
       console.log(laniste.laniste[0].denier);
       setDenier(laniste.laniste[0].denier);
     } catch (error) {
@@ -35,6 +38,7 @@ const Ludi = () => {
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    console.log(value);
     setLudus({ ...ludus, [name]: value });
   };
 
@@ -106,14 +110,25 @@ const Ludi = () => {
                 <div className='formRow'>
                   <label htmlFor='speciality'>choix d'une spécialité</label>
                   <select className='formInput' name='speciality'>
-                    <option onChange={handleChange} value=''>
-                      --choisissez une spécialité--
-                    </option>
-                    <option value={ludus.speciality_name}>
+                    <option value=''>--choisissez une spécialité--</option>
+                    <option
+                      onChange={handleChange}
+                      value={ludus.speciality_name}
+                    >
                       course de char
                     </option>
-                    <option value={ludus.speciality_name}>lutte</option>
-                    <option value={ludus.speciality_name}>athlétisme</option>
+                    <option
+                      onChange={handleChange}
+                      value={ludus.speciality_name}
+                    >
+                      lutte
+                    </option>
+                    <option
+                      onChange={handleChange}
+                      value={ludus.speciality_name}
+                    >
+                      athlétisme
+                    </option>
                   </select>
                 </div>
               </>

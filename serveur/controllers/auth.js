@@ -42,12 +42,7 @@ const register = async (req, res) => {
   // insère l'utilisateur
   const {
     rows: [laniste],
-  } = await db.query(authQueries.insertLaniste, [
-    firstname,
-    lastname,
-    mail,
-    hashedPassword,
-  ]);
+  } = await authQueries.insertLaniste();
 
   res.status(StatusCodes.CREATED).json(laniste);
 };
@@ -61,7 +56,7 @@ const login = async (req, res) => {
 
   const {
     rows: [laniste],
-  } = await db.query(authQueries.getLaniste, [mail]);
+  } = await authQueries.getLaniste(mail);
 
   if (!laniste) {
     throw new UnauthentificatedError('id incorrects');
