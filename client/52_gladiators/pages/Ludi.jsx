@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import getLudi from '../api/ludiQueries';
 import getLaniste from '../api/accountQueries';
 // import LudusCreator from '../components/LudusCreator';
+const specialities = ['lutte', 'course de char', 'athlétisme'];
 
 const Ludi = () => {
   const [ludi, setLudi] = useState([]);
@@ -16,8 +17,9 @@ const Ludi = () => {
 
   const getLanisteInfos = async () => {
     try {
-      const { data: laniste } = await getLaniste();
+      const { data: laniste } = await getLaniste(token);
       setDenier(laniste.laniste[0].denier);
+      console.log(laniste.laniste[0].firstname);
     } catch (error) {
       console.log(error);
     }
@@ -25,7 +27,7 @@ const Ludi = () => {
 
   useEffect(() => {
     getLanisteInfos();
-  }, [setLudi]);
+  }, [setDenier, token]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -57,11 +59,7 @@ const Ludi = () => {
 
   const getAllLudi = async () => {
     try {
-      const { data } = await axios.get(url, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await getLudi();
       console.log(data);
       setLudi(data.ludi);
     } catch (error) {
@@ -71,7 +69,7 @@ const Ludi = () => {
 
   useEffect(() => {
     getAllLudi();
-  }, [setLudi]);
+  }, []);
 
   return (
     <>
@@ -102,9 +100,16 @@ const Ludi = () => {
                     name='speciality_name'
                   >
                     <option value=''>--choisissez une spécialité--</option>
-                    <option value={'course de char'}>course de char</option>
+                    {specialities.map((speciality, index) => {
+                      return (
+                        <option value={speciality} key={index}>
+                          {speciality}
+                        </option>
+                      );
+                    })}
+                    {/* <option value={'course de char'}>course de char</option>
                     <option value={'lutte'}>lutte</option>
-                    <option value={'athlétisme'}>athlétisme</option>
+                    <option value={'athlétisme'}>athlétisme</option> */}
                   </select>
                 </div>
               </>
