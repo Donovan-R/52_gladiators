@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import getLaniste from '../api/ludiQueries';
+import getLaniste from '../api/accountQueries';
 // import LudusCreator from '../components/LudusCreator';
 
 const Ludi = () => {
+  const [ludi, setLudi] = useState([]);
+  const token = localStorage.getItem('token');
+  const [ludus, setLudus] = useState({
+    name: '',
+    speciality_name: '',
+  });
+  const url = 'http://localhost:5000/api/v1/ludi/';
   const [denier, setDenier] = useState('');
 
   const getLanisteInfos = async () => {
     try {
       const { data: laniste } = await getLaniste();
-
-      // await axios.get(
-      //   'http://localhost:5000/api/v1/account',
-      //   {
-      //     headers: {
-      //       authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
-      console.log(laniste.laniste[0].denier);
       setDenier(laniste.laniste[0].denier);
     } catch (error) {
       console.log(error);
@@ -28,12 +25,7 @@ const Ludi = () => {
 
   useEffect(() => {
     getLanisteInfos();
-  }, []);
-
-  const [ludus, setLudus] = useState({
-    name: '',
-    speciality_name: '',
-  });
+  }, [setLudi]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -41,11 +33,6 @@ const Ludi = () => {
     console.log(value);
     setLudus({ ...ludus, [name]: value });
   };
-
-  const [ludi, setLudi] = useState([]);
-  const token = localStorage.getItem('token');
-
-  const url = 'http://localhost:5000/api/v1/ludi/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +71,7 @@ const Ludi = () => {
 
   useEffect(() => {
     getAllLudi();
-  }, []);
+  }, [setLudi]);
 
   return (
     <>
@@ -109,26 +96,15 @@ const Ludi = () => {
                 </div>
                 <div className='formRow'>
                   <label htmlFor='speciality'>choix d'une spécialité</label>
-                  <select className='formInput' name='speciality'>
+                  <select
+                    className='formInput'
+                    onChange={handleChange}
+                    name='speciality_name'
+                  >
                     <option value=''>--choisissez une spécialité--</option>
-                    <option
-                      onChange={handleChange}
-                      value={ludus.speciality_name}
-                    >
-                      course de char
-                    </option>
-                    <option
-                      onChange={handleChange}
-                      value={ludus.speciality_name}
-                    >
-                      lutte
-                    </option>
-                    <option
-                      onChange={handleChange}
-                      value={ludus.speciality_name}
-                    >
-                      athlétisme
-                    </option>
+                    <option value={'course de char'}>course de char</option>
+                    <option value={'lutte'}>lutte</option>
+                    <option value={'athlétisme'}>athlétisme</option>
                   </select>
                 </div>
               </>

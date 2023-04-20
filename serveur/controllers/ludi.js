@@ -12,11 +12,7 @@ const createLudus = async (req, res) => {
 
   const {
     rows: [ludus],
-  } = await db.query(ludiQueries.createLudus, [
-    name,
-    speciality_name,
-    lanisteID,
-  ]);
+  } = await ludiQueries.createLudus(name, speciality_name, lanisteID);
 
   res.status(StatusCodes.CREATED).json({ ludus });
 };
@@ -25,7 +21,7 @@ const createLudus = async (req, res) => {
 
 const getAllLudi = async (req, res) => {
   const { lanisteID } = req.laniste;
-  const { rows: ludi } = await db.query(ludiQueries.getAllLudi, [lanisteID]);
+  const { rows: ludi } = await ludiQueries.getAllLudi(lanisteID);
   res.status(StatusCodes.OK).json({ ludi });
 };
 

@@ -41,7 +41,6 @@ const login = async (req, res) => {
   const {
     rows: [laniste],
   } = await authServices.checkLaniste(mail, password);
-  console.log(laniste);
 
   const token = jwt.sign(
     {
